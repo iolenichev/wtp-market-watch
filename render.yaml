@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: wtp-property-market-watchlist
+    env: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      # Optional: override Dubai Pulse / DLD URLs if the official endpoint changes
+      # - key: DLD_SALES_URL
+      #   value: https://api.dubaipulse.gov.ae/open/dld/dld_transactions-open-api
+      # - key: DLD_RENTS_URL
+      #   value: https://api.dubaipulse.gov.ae/open/dld/dld_rents-open-api

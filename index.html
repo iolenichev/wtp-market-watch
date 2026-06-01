@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WTP Property Market Watchlist</title>
+<style>
+  :root{--bg:#050505;--panel:#121212;--line:#252525;--text:#f7f7f7;--muted:#8e8e93;--green:#65c466;--red:#ef4f43;--amber:#f4b942;--blue:#5ac8fa;--card:#191919}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",Arial,sans-serif} .app{max-width:980px;margin:0 auto;padding:26px 18px 90px}.top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}.date{font-size:26px;font-weight:800;color:var(--muted);margin-top:-4px}.title{font-size:46px;font-weight:900;letter-spacing:-2px}.actions{display:flex;background:#1c1c1e;border:1px solid #333;border-radius:34px;padding:8px 12px;gap:16px;align-items:center}.actions input{width:170px;background:transparent;border:0;color:white;outline:0;font-size:18px}.dots{font-size:28px;color:#ddd}.tabs{display:flex;gap:10px;margin:28px 0 16px;overflow:auto}.tab{border:1px solid #2d2d2d;background:#141414;color:#ddd;border-radius:20px;padding:10px 15px;font-weight:700;white-space:nowrap;cursor:pointer}.tab.active{background:#fff;color:#000}.market{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid var(--line)}.row{display:grid;grid-template-columns:1.1fr 160px 170px;gap:18px;align-items:center;border-bottom:1px solid var(--line);padding:20px 0;cursor:pointer}.row:hover{background:linear-gradient(90deg,transparent,#111,transparent)}.ticker{font-size:28px;font-weight:900;letter-spacing:-.5px}.sub{color:var(--muted);font-size:17px;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chart{width:150px;height:54px}.price{text-align:right}.value{font-size:30px;font-weight:800}.badge{display:inline-block;min-width:92px;text-align:right;border-radius:9px;padding:8px 11px;margin-top:7px;font-size:22px;font-weight:800}.up{background:var(--green);color:white}.down{background:var(--red);color:white}.flat{background:#555;color:white}.panel{position:fixed;left:0;right:0;bottom:0;background:rgba(18,18,18,.98);border-top:1px solid #333;border-radius:28px 28px 0 0;box-shadow:0 -18px 50px rgba(0,0,0,.6);transform:translateY(105%);transition:.28s ease;z-index:10;max-height:88vh;overflow:auto}.panel.open{transform:translateY(0)}.handle{width:70px;height:6px;background:#777;border-radius:20px;margin:13px auto}.panelInner{max-width:980px;margin:0 auto;padding:10px 22px 34px}.panelTop{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.close{background:#2b2b2b;color:#fff;border:0;border-radius:50%;width:38px;height:38px;font-size:22px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0}.metric{background:var(--card);border:1px solid #2a2a2a;border-radius:18px;padding:15px}.label{color:var(--muted);font-size:13px;font-weight:700;text-transform:uppercase}.num{font-size:24px;font-weight:900;margin-top:7px}.bigChart{width:100%;height:210px;background:#0b0b0b;border:1px solid #2a2a2a;border-radius:22px;padding:14px}.insight{background:#111;border:1px solid #2a2a2a;border-radius:22px;padding:18px;margin-top:18px;line-height:1.45}.cta{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}.btn{border:0;border-radius:14px;padding:14px 18px;font-size:16px;font-weight:850;cursor:pointer}.primary{background:#fff;color:#000}.secondary{background:#262626;color:#fff}.footerNote{color:#777;font-size:13px;line-height:1.4;margin-top:26px}.source{color:#aaa;font-size:13px;margin-top:12px}.apiBox{margin-top:28px;background:#101010;border:1px solid #292929;border-radius:20px;padding:16px;color:#bbb}.apiBox code{color:#e7e7e7;word-break:break-all}.mobileBar{display:none}.news{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);width:min(92%,920px);background:rgba(36,36,36,.85);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.12);border-radius:28px;padding:18px 22px;z-index:8}.news h3{margin:0 0 7px;font-size:26px}.news p{margin:0;color:#aaa;font-size:16px}
+@media(max-width:720px){.app{padding:22px 16px 110px}.title{font-size:40px}.date{font-size:24px}.actions input{width:112px}.row{grid-template-columns:1fr 92px 112px;gap:9px;padding:18px 0}.ticker{font-size:24px}.sub{font-size:16px}.chart{width:88px;height:42px}.value{font-size:25px}.badge{font-size:20px;min-width:80px}.metrics{grid-template-columns:repeat(2,1fr)}.news{border-radius:26px}.news h3{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div><div class="title">Property</div><div class="date" id="today"></div></div>
+    <div class="actions"><span style="font-size:29px">⌕</span><input id="search" placeholder="Search"/><span class="dots">•••</span></div>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="market" id="market"></div>
+  <div class="apiBox">
+    <b>API-connected structure</b><br><br>
+    Frontend calls backend: <code>/api/market/areas</code><br>
+    Backend tries DLD/Dubai Pulse open API, normalizes records, calculates AED/sqft and trend.<br><br>
+    If source API/CORS/format fails, widget falls back to mock data and shows a warning in console.
+  </div>
+  <div class="footerNote">Data concept: official DLD/Dubai Pulse transaction data + Ejari rent data + optional Property Monitor API + WTP internal interpretation layer. Update cadence for real estate should be daily/weekly/monthly, not minute-by-minute.</div>
+</div>
+<div class="news"><h3>Market Brief</h3><p id="brief">Dubai Hills and JVC show positive 90-day momentum. Downtown is flat, Palm is premium but less liquid.</p></div>
+<div class="panel" id="panel"><div class="handle"></div><div class="panelInner" id="panelInner"></div></div>
+<script>
+const CONFIG = { API_URL: '/api/market/areas' }; // backend bridge: wtp_market_api_server.js
+let AREAS = [
+{city:'Dubai',cat:'Top Growing',ticker:'DUBAI HILLS',name:'Dubai Hills Estate',type:'Apartments · Dubai',price:2480,change:5.2,yield:5.9,tx:812,avg:2450000,signal:'Strong momentum',trend:[2210,2240,2260,2310,2350,2380,2415,2480],rooms:{studio:'-',one:'2,120',two:'2,430',three:'2,690'},view:'High-quality end-user demand, strong liquidity, premium entry price. Good for medium-term hold.'},
+{city:'Dubai',cat:'Top Growing',ticker:'JVC',name:'Jumeirah Village Circle',type:'Apartments · Dubai',price:1320,change:8.1,yield:7.8,tx:1430,avg:1040000,signal:'Yield leader',trend:[1120,1150,1180,1190,1235,1270,1290,1320],rooms:{studio:'1,180',one:'1,310',two:'1,420',three:'1,510'},view:'Best mass-market rental play. Watch new supply and project quality carefully.'},
+{city:'Dubai',cat:'Top Growing',ticker:'BUSINESS BAY',name:'Business Bay',type:'Apartments · Dubai',price:1980,change:4.7,yield:6.5,tx:980,avg:1850000,signal:'Liquid central market',trend:[1840,1870,1885,1900,1925,1950,1970,1980],rooms:{studio:'1,620',one:'1,930',two:'2,120',three:'2,350'},view:'Strong rental depth and central location. Better for liquid resale than maximum yield.'},
+{city:'Dubai',cat:'Premium',ticker:'DOWNTOWN',name:'Downtown Dubai',type:'Premium · Dubai',price:3210,change:-1.1,yield:4.8,tx:410,avg:4100000,signal:'Premium, slower growth',trend:[3300,3280,3270,3250,3240,3225,3215,3210],rooms:{studio:'2,580',one:'3,050',two:'3,320',three:'3,850'},view:'Prestige asset. Good for capital preservation, but current entry price needs selectivity.'},
+{city:'Dubai',cat:'Premium',ticker:'PALM',name:'Palm Jumeirah',type:'Premium · Dubai',price:4980,change:.8,yield:4.5,tx:225,avg:7500000,signal:'Trophy asset',trend:[4890,4910,4940,4930,4950,4970,4960,4980],rooms:{studio:'-',one:'3,900',two:'4,750',three:'5,850'},view:'Brand and scarcity matter. Liquidity depends heavily on building and view.'},
+{city:'Dubai',cat:'Yield',ticker:'ARJAN',name:'Arjan',type:'Apartments · Dubai',price:1210,change:4.2,yield:7.4,tx:640,avg:930000,signal:'Value + yield',trend:[1120,1140,1160,1170,1185,1195,1200,1210],rooms:{studio:'1,050',one:'1,190',two:'1,320',three:'1,420'},view:'Good entry ticket and rental return. Developer selection is critical.'},
+{city:'Abu Dhabi',cat:'Abu Dhabi',ticker:'SAADIYAT',name:'Saadiyat Island',type:'Premium · Abu Dhabi',price:2850,change:6.4,yield:5.2,tx:310,avg:3600000,signal:'Premium growth',trend:[2580,2620,2670,2700,2760,2800,2830,2850],rooms:{studio:'-',one:'2,420',two:'2,780',three:'3,250'},view:'Premium lifestyle district with strong capital growth narrative.'},
+{city:'Abu Dhabi',cat:'Abu Dhabi',ticker:'YAS ISLAND',name:'Yas Island',type:'Lifestyle · Abu Dhabi',price:1760,change:3.6,yield:6.1,tx:460,avg:1700000,signal:'Balanced',trend:[1650,1660,1690,1700,1720,1740,1750,1760],rooms:{studio:'1,420',one:'1,700',two:'1,850',three:'2,050'},view:'Balanced yield and lifestyle demand. Good for diversified UAE portfolio.'}
+];
+const tabs = ['All','Top Growing','Yield','Premium','Dubai','Abu Dhabi']; let active='All';
+function fmt(n){return n.toLocaleString('en-US')} function pct(n){return (n>0?'+':'')+n.toFixed(1)+'%'}
+function today(){const d=new Date(); document.getElementById('today').textContent=d.toLocaleDateString('en-GB',{day:'numeric',month:'long'});} today();
+function drawSpark(canvas, data, up=true){const c=canvas.getContext('2d'),w=canvas.width=canvas.clientWidth*2,h=canvas.height=canvas.clientHeight*2;c.clearRect(0,0,w,h); const min=Math.min(...data),max=Math.max(...data),pad=8; const pts=data.map((v,i)=>[pad+i*(w-pad*2)/(data.length-1), h-pad-(v-min)/(max-min||1)*(h-pad*2)]); c.strokeStyle=up?'#65c466':'#ef4f43'; c.lineWidth=5; c.beginPath(); pts.forEach((p,i)=>i?c.lineTo(...p):c.moveTo(...p)); c.stroke(); c.strokeStyle=up?'rgba(101,196,102,.65)':'rgba(239,79,67,.65)'; c.setLineDash([8,6]); c.lineWidth=2; c.beginPath(); c.moveTo(pad,h/2); c.lineTo(w-pad,h/2); c.stroke(); c.setLineDash([]); const g=c.createLinearGradient(0,0,0,h); g.addColorStop(0,up?'rgba(101,196,102,.45)':'rgba(239,79,67,.45)'); g.addColorStop(1,'rgba(0,0,0,0)'); c.fillStyle=g; c.beginPath(); c.moveTo(pts[0][0],h-pad); pts.forEach(p=>c.lineTo(...p)); c.lineTo(pts[pts.length-1][0],h-pad); c.closePath(); c.fill();}
+function renderTabs(){document.getElementById('tabs').innerHTML=tabs.map(t=>`<button class="tab ${t===active?'active':''}" onclick="active='${t}';render()">${t}</button>`).join('')}
+function filtered(){const q=document.getElementById('search').value.toLowerCase();return AREAS.filter(a=>(active==='All'||a.cat===active||a.city===active)&&(a.name.toLowerCase().includes(q)||a.ticker.toLowerCase().includes(q)))}
+function render(){renderTabs(); const market=document.getElementById('market'); market.innerHTML=filtered().map((a,i)=>`<div class="row" onclick="openArea('${a.ticker}')"><div><div class="ticker">${a.ticker}</div><div class="sub">${a.type}</div></div><canvas class="chart" id="ch${i}"></canvas><div class="price"><div class="value">${fmt(a.price)}</div><div class="badge ${a.change>0?'up':a.change<0?'down':'flat'}">${pct(a.change)}</div></div></div>`).join(''); filtered().forEach((a,i)=>drawSpark(document.getElementById('ch'+i),a.trend,a.change>=0));}
+document.getElementById('search').addEventListener('input',render); render();
+function openArea(t){const a=AREAS.find(x=>x.ticker===t); const p=document.getElementById('panel'); document.getElementById('panelInner').innerHTML=`<div class="panelTop"><div><div class="ticker" style="font-size:36px">${a.name}</div><div class="sub">${a.type} · ${a.signal}</div></div><button class="close" onclick="closePanel()">×</button></div><div class="metrics"><div class="metric"><div class="label">Sale price</div><div class="num">${fmt(a.price)} AED/sqft</div></div><div class="metric"><div class="label">90D Change</div><div class="num" style="color:${a.change>=0?'var(--green)':'var(--red)'}">${pct(a.change)}</div></div><div class="metric"><div class="label">Gross Yield</div><div class="num">${a.yield}%</div></div><div class="metric"><div class="label">Transactions</div><div class="num">${fmt(a.tx)}</div></div></div><canvas class="bigChart" id="big"></canvas><div class="metrics"><div class="metric"><div class="label">Studio</div><div class="num">${a.rooms.studio}</div></div><div class="metric"><div class="label">1BR</div><div class="num">${a.rooms.one}</div></div><div class="metric"><div class="label">2BR</div><div class="num">${a.rooms.two}</div></div><div class="metric"><div class="label">3BR</div><div class="num">${a.rooms.three}</div></div></div><div class="insight"><b>WTP View:</b> ${a.view}<br><br><b>Next action:</b> compare live units in this district against the area median and rental yield.</div><div class="cta"><button class="btn primary">Get investment options</button><button class="btn secondary">Compare 3 areas</button><button class="btn secondary">Request PDF report</button></div><div class="source">Suggested source layer: DLD/Dubai Pulse sales transactions, Ejari rental contracts, optional Property Monitor API, WTP internal comments.</div>`; p.classList.add('open'); setTimeout(()=>drawSpark(document.getElementById('big'),a.trend,a.change>=0),50)}
+function closePanel(){document.getElementById('panel').classList.remove('open')}
+async function loadFromApi(){
+  if(!CONFIG.API_URL) return;
+  try{
+    const r=await fetch(CONFIG.API_URL);
+    const data=await r.json();
+    if(data && Array.isArray(data.areas) && data.areas.length){
+      AREAS = data.areas.map(a => ({...a, yield: a.yield ?? '-', rooms: a.rooms || {studio:'-', one:'-', two:'-', three:'-'}, view: a.view || 'Live DLD/Dubai Pulse transaction layer. Add WTP interpretation and Property Monitor/Ejari rent layer for yield.'}));
+      document.getElementById('brief').textContent = `Loaded ${AREAS.length} areas from ${data.source}. Updated ${new Date(data.updated_at).toLocaleString()}.`;
+      render();
+    }
+    if(data.warning) console.warn('API bridge warning:', data.warning);
+  }catch(e){
+    console.warn('API unavailable, using mock data',e);
+    document.getElementById('brief').textContent = 'API bridge is not running. Using mock data. Start node backend on localhost:8787.';
+  }
+}
+loadFromApi();
+</script>
+</body>
+</html>
